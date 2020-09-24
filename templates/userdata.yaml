@@ -1,0 +1,18 @@
+#cloud-config
+packages:
+  - jq
+
+write_files:
+  - path: /etc/consul.d/config.json
+    content: ${consul_conf}
+    permissions: '0644'
+    owner: consul:consul
+    encoding: b64
+  - path: /etc/environment
+    content: |
+      CONSUL_HTTP_ADDR=http://${ip_address}:8500
+    append: true
+
+runcmd:
+  - systemctl enable consul
+  - systemctl restart consul
