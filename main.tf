@@ -96,3 +96,4 @@ module "security_group_consul" {
   ]
   tags = var.tags
 }
+
