@@ -1,13 +1,9 @@
 {
   "bootstrap_expect": 1,
-  "bind_addr": "{{ GetInterfaceIP \"eth0\" }}",
-  "connect":{
-      "enabled": true
-  },
-  "address": {
-    "{{ GetInterfaceIP \"eth0\" }}"
-  },
-  "datacenter": "${consul_datacenter}",
+  "advertise_addr": "3.25.211.183",
+  "advertise_addr_wan": "3.25.211.183",
+  "datacenter": "AWS",
+  "client_addr": "0.0.0.0",
   "data_dir": "/opt/consul/data",
   "enable_syslog": true,
   "leave_on_terminate": true,

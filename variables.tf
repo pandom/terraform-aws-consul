@@ -1,7 +1,10 @@
-
 variable hostname {
   type    = string
   default = "consul"
+}
+variable nomad_hostname {
+  type    = string
+  default = "nomad"
 }
 
 variable key_name {

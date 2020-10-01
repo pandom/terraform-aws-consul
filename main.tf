@@ -16,6 +16,7 @@ locals {
   vpc_id                  = data.terraform_remote_state.this.outputs.vpc_id
 }
 
+
 data aws_route53_zone "this" {
   name         = "burkey.hashidemos.io"
   private_zone = false
@@ -24,6 +25,14 @@ data aws_route53_zone "this" {
 data aws_ami "ubuntu" {
   most_recent = true
 
+  filter {
+    name   = "tag:application"
+    values = ["nomad-${var.nomad_version}"]
+  }
+  filter {
+    name   = "tag:application"
+    values = ["vault-${var.vault_version}"]
+  }
   filter {
     name   = "tag:application"
     values = ["consul-${var.consul_version}"]
@@ -62,7 +71,7 @@ module "consul" {
   subnet_id = local.public_subnets[0]
   tags      = var.tags
 }
-
+# NAME ENTRIES
 resource aws_route53_record "this" {
   zone_id = data.aws_route53_zone.this.id
   name    = "${var.hostname}.${data.aws_route53_zone.this.name}"
@@ -70,7 +79,14 @@ resource aws_route53_record "this" {
   ttl     = "300"
   records = [module.consul.public_ip[0]]
 }
-
+resource aws_route53_record "nomad" {
+  zone_id = data.aws_route53_zone.this.id
+  name    = "${var.nomad_hostname}.${data.aws_route53_zone.this.name}"
+  type    = "A"
+  ttl     = "300"
+  records = [module.consul.public_ip[0]]
+}
+## SECURITY GROUPS
 module "security_group_consul" {
   source = "terraform-aws-modules/security-group/aws"
 
@@ -91,6 +107,32 @@ module "security_group_consul" {
       to_port     = 8301
       protocol    = "tcp"
       description = "consul ingress"
+      cidr_blocks = "10.0.0.0/16,${join(",",var.my_cidrs)}"
+    }
+  ]
+  tags = var.tags
+}
+
+module "security_group_nomad" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  name        = "nomad-http"
+  description = "nomad http access"
+  vpc_id      = local.vpc_id
+
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 4646
+      to_port     = 4646
+      protocol    = "tcp"
+      description = "nomad ingress"
+      cidr_blocks = "10.0.0.0/16,${join(",",var.my_cidrs)}"
+    },
+    {
+      from_port   = 4647
+      to_port     = 4648
+      protocol    = "tcp"
+      description = "nomad backend"
       cidr_blocks = "10.0.0.0/16,${join(",",var.my_cidrs)}"
     }
   ]
