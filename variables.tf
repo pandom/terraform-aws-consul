@@ -49,3 +49,11 @@ variable consul_version {
   type = string
   default = ""
 }
+variable vault_version {
+  type = string
+  default = ""
+}
+variable nomad_version {
+  type = string
+  default = ""
+}
