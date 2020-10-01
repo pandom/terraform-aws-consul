@@ -1,0 +1,205 @@
+---
+# playbook.yml
+- name: "Install Vault"
+  hosts: default
+  become: true
+  vars:
+    vault_version: 1.5.4
+
+  tasks:
+  - name: Upgrade installed packages
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Install unzip
+    apt:
+      update_cache: yes
+      name: unzip
+      state: latest
+
+  - name: Create Vault Group
+    group:
+      name: vault
+      state: present
+
+  - name: Create Vault User
+    user:
+      name: vault
+      state: present
+
+  - name: Download Vault Binary
+    get_url:
+      url: https://releases.hashicorp.com/vault/{{ vault_version }}+ent/vault_{{ vault_version }}+ent_linux_amd64.zip
+      dest: ./vault.zip
+      checksum: sha256:https://releases.hashicorp.com/vault/{{ vault_version }}+ent/vault_{{ vault_version }}+ent_SHA256SUMS
+
+  - name: Unpack Vault Binary
+    unarchive:
+      remote_src: yes
+      src: ./vault.zip
+      dest: /usr/local/bin/
+
+  - name: Set Vault Binary Owner
+    file:
+      path: /usr/local/bin/vault
+      owner: vault
+      group: vault
+      mode: +x
+
+  - name: Copy Vault systemd
+    copy:
+      src: ./vault.service
+      dest: /etc/systemd/system/vault.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Make Vault Raft Data Directory
+    file:
+      path: /opt/vault/data
+      state: directory
+      owner: vault
+      group: vault
+
+  - name: Disable Vault Service
+    systemd:
+      name: vault
+      enabled: no
+### CONSUL
+
+- name: "Install Consul"
+  hosts: default
+  become: true
+  vars:
+    consul_version: 1.8.4
+
+  tasks:
+  - name: Upgrade installed packages
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Install unzip
+    apt:
+      update_cache: yes
+      name: unzip
+      state: latest
+
+  - name: Create Consul Group
+    group:
+      name: consul
+      state: present
+
+  - name: Create Consul User
+    user:
+      name: consul
+      state: present
+
+  - name: Download Consul Binary
+    get_url:
+      url: https://releases.hashicorp.com/consul/{{ consul_version }}+ent/consul_{{ consul_version }}+ent_linux_amd64.zip
+      dest: ./consul.zip
+      checksum: sha256:https://releases.hashicorp.com/consul/{{ consul_version }}+ent/consul_{{ consul_version }}+ent_SHA256SUMS
+
+  - name: Unpack Consul Binary
+    unarchive:
+      remote_src: yes
+      src: ./consul.zip
+      dest: /usr/local/bin/
+
+  - name: Set Consul Binary Owner
+    file:
+      path: /usr/local/bin/consul
+      owner: consul
+      group: consul
+      mode: +x
+
+  - name: Copy consul systemd
+    copy:
+      src: ./consul.service
+      dest: /etc/systemd/system/consul.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Make Vault Raft Data Directory
+    file:
+      path: /opt/consul/data
+      state: directory
+      owner: consul
+      group: consul
+
+  - name: Disable Vault Service
+    systemd:
+      name: consul
+      enabled: no
+
+### nomad
+
+- name: "Install nomad"
+  hosts: default
+  become: true
+  vars:
+    nomad_version: 0.12.5
+
+  tasks:
+  - name: Upgrade installed packages
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Install unzip
+    apt:
+      update_cache: yes
+      name: unzip
+      state: latest
+
+  - name: Create nomad Group
+    group:
+      name: nomad
+      state: present
+
+  - name: Create nomad User
+    user:
+      name: nomad
+      state: present
+
+  - name: Download nomad Binary
+    get_url:
+      url: https://releases.hashicorp.com/nomad/{{ nomad_version }}+ent/nomad_{{ nomad_version }}+ent_linux_amd64.zip
+      dest: ./nomad.zip
+      checksum: sha256:https://releases.hashicorp.com/nomad/{{ nomad_version }}+ent/nomad_{{ nomad_version }}+ent_SHA256SUMS
+
+  - name: Unpack nomad Binary
+    unarchive:
+      remote_src: yes
+      src: ./nomad.zip
+      dest: /usr/local/bin/
+
+  - name: Set nomad Binary Owner
+    file:
+      path: /usr/local/bin/nomad
+      owner: nomad
+      group: nomad
+      mode: +x
+
+  - name: Copy nomad systemd
+    copy:
+      src: ./nomad.service
+      dest: /etc/systemd/system/nomad.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Make Nomad Raft Data Directory
+    file:
+      path: /opt/nomad/data
+      state: directory
+      owner: nomad
+      group: nomad
+
+  - name: Disable Vault Service
+    systemd:
+      name: nomad
+      enabled: no

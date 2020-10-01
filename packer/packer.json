@@ -1,0 +1,38 @@
+{
+  "variables": {
+    "vault_version": "1.5.0",
+    "nomad_version": "0.12.5",
+    "consul_version": "1.9.0"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/*ubuntu-bionic-18.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "instance_type": "t2.medium",
+      "ssh_username": "ubuntu",
+      "ami_name": "vault-{{isotime | clean_resource_name}}",
+      "tags": {
+        "owner": "Anthony Burke",
+        "Base_AMI_Name": "{{ .SourceAMIName }}",
+        "nomad": "{{user `nomad_version`}}",
+        "consul": "{{user `consul_version`}}",
+        "vault": "{{user `vault_version`}}"
+
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./playbooks/playbook.yml"
+    }
+  ]
+ }
