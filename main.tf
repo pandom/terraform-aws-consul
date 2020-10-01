@@ -26,16 +26,16 @@ data aws_ami "ubuntu" {
   most_recent = true
 
   filter {
-    name   = "tag:application"
-    values = ["nomad-${var.nomad_version}"]
+    name   = "tag:nomad"
+    values = ["${var.nomad_version}"]
   }
   filter {
-    name   = "tag:application"
-    values = ["vault-${var.vault_version}"]
+    name   = "tag:vault"
+    values = ["${var.vault_version}"]
   }
   filter {
-    name   = "tag:application"
-    values = ["consul-${var.consul_version}"]
+    name   = "tag:consul"
+    values = ["${var.consul_version}"]
   }
 
   filter {
