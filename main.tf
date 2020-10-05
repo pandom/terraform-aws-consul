@@ -116,7 +116,7 @@ resource aws_route53_record "nomad" {
 
 ## SECOND NOMAD
 
-resource aws_route53_record "nomad" {
+resource aws_route53_record "nomad-remote" {
   zone_id = data.aws_route53_zone.this.id
   name    = "${var.nomad_hostname}-remote.${data.aws_route53_zone.this.name}"
   type    = "A"
