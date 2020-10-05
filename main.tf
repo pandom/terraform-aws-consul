@@ -79,7 +79,7 @@ module "nomad" {
   name           = var.nomad_hostname
   instance_count = 1
 
-  private_ip = var.private_ip2
+  private_ip = "10.0.101.163"
 
   user_data_base64 = base64gzip(data.template_file.userdata.rendered)
 
