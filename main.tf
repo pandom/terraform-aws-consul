@@ -121,14 +121,14 @@ resource aws_route53_record "nomad-remote" {
   name    = "${var.nomad_hostname}-remote.${data.aws_route53_zone.this.name}"
   type    = "A"
   ttl     = "300"
-  records = [module.consul.public_ip[0]]
+  records = [module.nomad.public_ip[0]]
 }
 resource aws_route53_record "consul-remote" {
   zone_id = data.aws_route53_zone.this.id
   name    = "${var.hostname}-remote.${data.aws_route53_zone.this.name}"
   type    = "A"
   ttl     = "300"
-  records = [module.consul.public_ip[0]]
+  records = [module.nomad.public_ip[0]]
 }
 
 ## SECURITY GROUPS
