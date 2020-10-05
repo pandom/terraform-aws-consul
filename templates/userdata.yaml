@@ -21,7 +21,7 @@ write_files:
       append: true  
 
 write_files:
-  - path: /etc/nomad.d/config.json
+  - path: /etc/nomad.d/config.hcl
     content: ${consul_conf}
     permissions: '0644'
     owner: nomad:nomad
