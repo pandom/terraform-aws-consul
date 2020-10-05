@@ -171,14 +171,14 @@ module "security_group_nomad" {
       to_port     = 4646
       protocol    = "tcp"
       description = "nomad ingress"
-      cidr_blocks = "10.0.0.0/16,${join(",",var.my_cidrs)}"
+      cidr_blocks = "13.236.195.181/32,13.239.146.114/32,10.0.0.0/16,${join(",",var.my_cidrs)}"
     },
     {
       from_port   = 4647
       to_port     = 4648
       protocol    = "tcp"
       description = "nomad backend"
-      cidr_blocks = "10.0.0.0/16,${join(",",var.my_cidrs)}"
+      cidr_blocks = "13.236.195.181/32,13.239.146.114/32,10.0.0.0/16,${join(",",var.my_cidrs)}"
     }
   ]
   tags = var.tags
