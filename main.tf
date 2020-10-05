@@ -65,7 +65,34 @@ module "consul" {
   vpc_security_group_ids = [
     local.security_group_outbound,
     local.security_group_ssh,
-    module.security_group_consul.this_security_group_id
+    module.security_group_consul.this_security_group_id,
+    module.security_group_nomad.this_security_group_id
+  ]
+
+  subnet_id = local.public_subnets[0]
+  tags      = var.tags
+}
+module "nomad" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "2.13.0"
+
+  name           = var.nomad_hostname
+  instance_count = 1
+
+  private_ip = var.private_ip2
+
+  user_data_base64 = base64gzip(data.template_file.userdata.rendered)
+
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+
+  monitoring = true
+  vpc_security_group_ids = [
+    local.security_group_outbound,
+    local.security_group_ssh,
+    module.security_group_consul.this_security_group_id,
+    module.security_group_nomad.this_security_group_id
   ]
 
   subnet_id = local.public_subnets[0]
@@ -86,6 +113,17 @@ resource aws_route53_record "nomad" {
   ttl     = "300"
   records = [module.consul.public_ip[0]]
 }
+
+## SECOND NOMAD
+
+resource aws_route53_record "nomad" {
+  zone_id = data.aws_route53_zone.this.id
+  name    = "${var.nomad_hostname}-remote.${data.aws_route53_zone.this.name}"
+  type    = "A"
+  ttl     = "300"
+  records = [module.consul.public_ip[0]]
+}
+
 ## SECURITY GROUPS
 module "security_group_consul" {
   source = "terraform-aws-modules/security-group/aws"

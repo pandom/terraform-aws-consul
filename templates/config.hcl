@@ -1,11 +1,11 @@
 #NOMAD CONFIGURATION
 bind_addr = "0.0.0.0"
 advertise  {
-  http = "3.25.211.183:4646"
-  rpc = "3.25.211.183:4647"
-  serf = "3.25.211.183:4648"
+  http = "13.211.103.60:4646"
+  rpc = "13.211.103.60:4647"
+  serf = "13.211.103.60:4648"
 }
-data_dir = "/var/lib/nomad"
+data_dir = "/opt/nomad/data"
 datacenter = "DC1"
 region = "prod"
 authoritative_region = "prod"
