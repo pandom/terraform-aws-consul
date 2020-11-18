@@ -32,7 +32,7 @@ variable slack_webhook {
 
 variable private_ip {
   type    = string
-  default = "10.0.101.162"
+  default = "10.0.111.162"
 }
 
 variable consul_datacenter {
