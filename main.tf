@@ -4,7 +4,7 @@ data terraform_remote_state "this" {
   config = {
     organization = "burkey"
     workspaces = {
-      name = "terraform-aws-core"
+      name = "tf-aws-core"
     }
   }
 }
